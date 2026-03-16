@@ -8,29 +8,7 @@
     <link rel="icon" href="favikon.png" sizes="any">
     
     <!-- COOKIE SYSTEM SCRIPT (Skal ligge før alt andet) -->
-    <script>
-        // Gem de originale funktioner
-        const _orgSet = localStorage.setItem;
-        const _orgGet = localStorage.getItem;
-
-        // Tjek om der er givet samtykke før
-        var hasConsent = !!_orgGet.call(localStorage, 'viklin_consent');
-
-        if (!hasConsent) {
-            // Blokér localStorage indtil accept
-            localStorage.setItem = function() {
-                console.warn("localStorage er låst");
-                return null;
-            };
-        }
-
-        function acceptCookies() {
-            localStorage.setItem = _orgSet;
-            localStorage.setItem('viklin_consent', 'true');
-            document.getElementById('cookie-banner').style.display = 'none';
-            location.reload(); // Genindlæs for at aktivere alt
-        }
-    </script>
+    <script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="a6d92505-46ca-4529-8cd1-4930dd9d1ff4" data-blockingmode="auto" type="text/javascript"></script>
 
     <style>
         :root {
@@ -181,12 +159,6 @@
 </head>
 <body>
 
-    <!-- COOKIE BANNER -->
-    <div id="cookie-banner">
-        <h3 style="margin:0; color:var(--accent-green);">🍪 Cookies & Point</h3>
-        <p style="font-size:0.9rem; margin: 10px 0;">Vi bruger cookies til reklamer og localStorage til at gemme dine highscores. Er det okay?</p>
-        <button class="cookie-btn" onclick="acceptCookies()">Det er bare i orden!</button>
-    </div>
 
     <div id="cursor-glow"></div>
 
