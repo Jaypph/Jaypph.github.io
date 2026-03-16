@@ -1,4 +1,4 @@
-# VikLin.fun 🎮
+# VikLin.fun
 
 Welcome to **VikLin.fun** – your ultimate destination for fun, quick, and engaging browser games!
 
