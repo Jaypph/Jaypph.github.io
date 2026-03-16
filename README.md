@@ -1,6 +1,6 @@
 # VikLin.fun
 
-Welcome to **VikLin.fun** – your ultimate destination for fun, quick, and engaging browser games!
+Welcome to **VikLin.fun** – your ultimate destination for fun, quick, and engaging browser games! (the website is danish)
 
 ## About The Project
 VikLin.fun is a curated collection of fun browser-based games designed to provide instant entertainment. Whether you are looking for puzzles, arcade games, or something to pass the time, we aim to have something for everyone.
@@ -17,4 +17,11 @@ We believe in respecting open-source licenses. **Full credits for all external c
 
 *If you believe your work was not properly credited, please open an issue in this repository, and we will update it immediately.*
 
-Visit the website on kortlink.dk/VikLin.fun/2u8s5 (the website is danish)
+## Visit the website
+By typing [kortlink.dk/VikLin.fun/2u8s5](https://kortlink.dk/VikLin.fun/2u8s5) in your browser, or  
+By scanning this QR-Code:
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Jaypph/Jaypph.github.io/main/qrcode.svg" width="200">
+</p>
+
