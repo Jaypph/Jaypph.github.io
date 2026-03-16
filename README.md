@@ -1,66 +1,21 @@
- * [Tetris](https://jakesgordon.com/games/tetris/)
- * read a [blog article](https://jakesgordon.com/writing/javascript-tetris/)
- * view the [source](https://github.com/jakesgordon/javascript-tetris)
+# VikLin.fun 🎮
 
->> _*SUPPORTED BROWSERS*: Chrome, Firefox, Safari, Opera and IE9+_
+Welcome to **VikLin.fun** – your ultimate destination for fun, quick, and engaging browser games!
 
-FUTURE
-======
+## About The Project
+VikLin.fun is a curated collection of fun browser-based games designed to provide instant entertainment. Whether you are looking for puzzles, arcade games, or something to pass the time, we aim to have something for everyone.
 
- * menu
- * animation and fx
- * levels
- * high scores
- * touch support
- * music and sound fx
+## Features
+*   **Wide Variety:** Multiple game genres in one place.
+*   **Instant Play:** No downloads or installations needed.
+*   **Mobile Friendly:** Play on your phone or desktop.
 
+## Credits & Attribution
+This project uses open-source code, assets, and game templates from various talented creators across the internet.
 
-License
-=======
+We believe in respecting open-source licenses. **Full credits for all external code and games can be found at the bottom of the page on our website.**
 
-[MIT](http://en.wikipedia.org/wiki/MIT_License) license.
-# HTML5 Games Collection
-
-During my tutorials and book writings, I created different HTML5 games examples. And I would like to put all my games examples here.
-
-[Thomas Mak (Makzan)](http://makzan.net/)
-
-## Games
-
-The games in this repo so far
-
-### Audio game with Audio tag
-
-Originally designed from my book [HTML5 Games Development by Examples: Beginner's guide](http://makzan.net/works/book-html5-games-dev-by-examples/) and you can [play this game here](http://42games.net/html5/audio-game/).
-
-### Car game with Box2D
-
-Originally designed from my book [HTML5 Games Development by Examples: Beginner's guide](http://makzan.net/works/book-html5-games-dev-by-examples/) and you can [play this game here](http://42games.net/html5/box2d-car-game/).
-
-### Count99
-
-![Count 99 screen](http://makzan.github.com/HTML5-Games-Examples/images/count99-screen.png)
-
-### Memory matching game with CSS3
-
-![Memory matching game screen](http://makzan.github.com/HTML5-Games-Examples/images/css-matching-screen.png)
-
-Originally designed from my book [HTML5 Games Development by Examples: Beginner's guide](http://makzan.net/works/book-html5-games-dev-by-examples/) and you can [play this game here](http://42games.net/css3memory/).
-
-### Multiply Defense game with EaselJS
-
-![Multiple-Defense game screen](http://makzan.github.io/HTML5-Games-Examples/images/multiple-deferse.png)
-
-### Ping Pong game with jQuery
-
-### Untagle game with Canvas
-
-Originally designed from my book [HTML5 Games Development by Examples: Beginner's guide](http://makzan.net/works/book-html5-games-dev-by-examples/) and you can [play this game here](http://42games.net/html5/untangle/).
-
-![Untangle game screen](http://makzan.github.io/HTML5-Games-Examples/images/untangle-screen.png)
+*If you believe your work was not properly credited, please open an issue in this repository, and we will update it immediately.*
 
 ## License
-
-All game code here is under MIT license.
-
-
+This project is licensed under the MIT License - see the LICENSE file for details.
