@@ -17,5 +17,4 @@ We believe in respecting open-source licenses. **Full credits for all external c
 
 *If you believe your work was not properly credited, please open an issue in this repository, and we will update it immediately.*
 
-## License
-This project is licensed under the MIT License - see the LICENSE file for details.
+Visit the website on kortlink.dk/VikLin.fun/2u8s5 (the website is danish)
