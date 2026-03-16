@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VikLin.fun | ALFABETET</title>   
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favikon.png" sizes="any">
+
+    <style>
+        .audio-player {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: var(--glass-bg);
+            padding: 12px 18px;
+            border-radius: 25px;
+            box-shadow: var(--neon-shadow);
+            backdrop-filter: blur(10px);
+            margin-bottom: 40px;
+            width: fit-content;
+            position: relative;
+            z-index: 2;
+        }
+
+        .audio-player button {
+            border: none;
+            background: none;
+            color: var(--accent-green);
+            font-size: 1.6rem;
+            cursor: pointer;
+        }
+
+        .menu {
+            position: relative;
+        }
+
+        .menu-content {
+            position: absolute;
+            right: 0;
+            top: 40px;
+            background: var(--glass-bg);
+            border: 1px solid var(--accent-green);
+            border-radius: 15px;
+            min-width: 180px;
+            box-shadow: var(--neon-shadow);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+
+        .menu-content button,
+        .menu-content a {
+            display: block;
+            width: 100%;
+            padding: 10px 15px;
+            background: none;
+            border: none;
+            text-align: left;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+
+        .menu-content button:hover,
+        .menu-content a:hover {
+            background: rgba(124,252,0,0.15);
+        }
+
+        section h1 {
+            margin: 15px 0;
+            font-size: clamp(2rem, 8vw, 5rem);
+            letter-spacing: -2px;
+        }
+
+        section h1.red {
+            color: #ff4d4d;
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="button">Tilbage til forsiden</a>    
+    <div class="audio-player">
+        <button onclick="togglePlay()">▶</button>
+
+        <audio id="player">
+            <source src="ABC.wav" type="audio/wav">
+            Din browser understøtter ikke audio.
+        </audio>
+
+        <div class="menu">
+            <button onclick="toggleMenu()">⋮</button>
+            <div class="menu-content" id="menu">
+                <button onclick="setSpeed(0.5)">🐢 0.5×</button>
+                <button onclick="setSpeed(1)">▶ 1× (normal)</button>
+                <button onclick="setSpeed(1.5)">⚡ 1.5×</button>
+                <button onclick="setSpeed(2)">🚀 2×</button>
+                <a href="ABC.wav" download>⬇ Download</a>
+            </div>
+        </div>
+    </div>
+
+    <h1 class="section-title">ALFABETET</h1>
+    <p>Lær alfabetet at kende</p>
+
+    <section class="content">
+        <h1>Aa</h1>
+        <h1>Bb</h1>
+        <h1>Cc</h1>
+        <h1>Dd</h1>
+        <h1>Ee</h1>
+        <h1>Ff</h1>
+        <h1>Gg</h1>
+        <h1>Hh</h1>
+        <h1>Ii</h1>
+        <h1>Jj</h1>
+        <h1>Kk</h1>
+        <h1>Ll</h1>
+        <h1>Mm</h1>
+        <h1>Nn</h1>
+        <h1>Oo</h1>
+        <h1>Pp</h1>
+        <h1>Qq</h1>
+        <h1>Rr</h1>
+        <h1>Ss</h1>
+        <h1>Tt</h1>
+        <h1>Uu</h1>
+        <h1>Vv</h1>
+        <h1>Ww</h1>
+        <h1>Xx</h1>
+        <h1>Yy</h1>
+        <h1>Zz</h1>
+        <h1>Ææ</h1>
+        <h1>Øø</h1>
+        <h1>Åå</h1>
+    </section>
+
+    <footer>
+        ©2026 VIKLIN DIGITAL • DESIGNET TIL FREMTIDEN
+    </footer>
+
+    <script>
+        const audio = document.getElementById("player");
+        const menu = document.getElementById("menu");
+
+        function togglePlay() {
+            if (audio.paused) {
+                audio.play();
+            } else {
+                audio.pause();
+            }
+        }
+
+        function toggleMenu() {
+            menu.style.display = menu.style.display === "block" ? "none" : "block";
+        }
+
+        function setSpeed(speed) {
+            audio.playbackRate = speed;
+            menu.style.display = "none";
+        }
+
+        document.addEventListener("click", e => {
+            if (!e.target.closest(".menu")) {
+                menu.style.display = "none";
+            }
+        });
+    </script>
+
+</body>
+</html>

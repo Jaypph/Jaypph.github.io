@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VikLin.fun | CREDITS</title>
+    <link rel="icon" href="favikon.png" sizes="any">
+    <style>
+        :root {
+            --primary-green: #004d00;
+            --accent-green: #7cfc00;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #008000, #90ee90, #006400, #1a1a1a);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            margin: 0;
+            min-height: 100vh;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow-x: hidden;
+            align-items: center;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        #cursor-glow {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(124,252,0,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+        }
+
+        .credits-card {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(15px);
+            padding: 40px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            z-index: 2;
+            margin: 40px 0;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+        }
+
+        h1 {
+            color: var(--accent-green);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 40px;
+        }
+
+        .credit-group {
+            margin-bottom: 30px;
+        }
+
+        .role {
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--accent-green);
+            letter-spacing: 1px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .name {
+            display: block;
+            font-size: 1.4rem;
+            font-weight: 500;
+        }
+
+        /* Styling til links i navn-sektionen */
+        .credit-link {
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+            border-bottom: 1px dashed var(--accent-green);
+        }
+
+        .credit-link:hover {
+            color: var(--accent-green);
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: var(--accent-green);
+            color: var(--primary-green);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(124, 252, 0, 0.4);
+        }
+
+        footer {
+            margin-top: auto;
+            width: 100%;
+            max-width: 1000px;
+            padding: 30px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.6);
+            z-index: 2;
+        }
+        
+        footer a { color: var(--accent-green); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="button">Tilbage til forsiden</a> 
+    <div id="cursor-glow"></div>
+
+    <div class="credits-card">
+        <h1>Credits</h1>
+        <p class="subtitle">Skaberne bag VikLin.fun</p>
+
+        <div class="credit-group">
+            <span class="role">Grundlæggere & Udviklere</span>
+            <span class="name">Linus B. F. & Viktor L. Z.</span>
+        </div>
+
+        <div class="credit-group">
+            <span class="role">Design & Brugerflade</span>
+            <span class="name">VikLin Digital Design</span>
+        </div>
+
+        <div class="credit-group">
+            <span class="role">Inspiration & Kode-ressourcer</span>
+            <span class="name">
+                <a href="https://jakesgordon.com/" target="_blank" class="credit-link">Jake Gordon</a>
+            </span>
+            <span class="name">
+                <a href="http://makzan.net/" target="_blank" class="credit-link">Thomas Mak</a>
+            </span>
+        </div>
+
+        <div class="credit-group">
+            <span class="role">Særlig tak til</span>
+            <span class="name">Alle vores spillere 🎮</span>
+        </div>
+
+        <a href="index.html" class="back-btn">Tilbage til forsiden</a>
+    </div>
+
+    <footer>
+        <div>&copy; 2026 VIKLIN DIGITAL</div>
+        <div>
+            <a href="index.html">Forside</a> • <a href="privatliv.html">Privatliv</a>
+        </div>
+    </footer>
+
+    <script>
+        const glow = document.getElementById('cursor-glow');
+        document.addEventListener('mousemove', e => {
+            glow.style.left = e.clientX + 'px';
+            glow.style.top = e.clientY + 'px';
+        });
+    </script>
+
+</body>
+</html>

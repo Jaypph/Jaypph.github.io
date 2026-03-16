@@ -1,0 +1,255 @@
+﻿<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="VikLin.fun er en hjemmeside med sjove spil og en shop hvor man kan købe 3D printede ting.">  
+    <title>VikLin.fun | STARTSIDE</title>
+    <link rel="icon" href="favikon.png" sizes="any">
+    
+    <!-- COOKIE SYSTEM SCRIPT (Skal ligge før alt andet) -->
+    <script>
+        // Gem de originale funktioner
+        const _orgSet = localStorage.setItem;
+        const _orgGet = localStorage.getItem;
+
+        // Tjek om der er givet samtykke før
+        var hasConsent = !!_orgGet.call(localStorage, 'viklin_consent');
+
+        if (!hasConsent) {
+            // Blokér localStorage indtil accept
+            localStorage.setItem = function() {
+                console.warn("localStorage er låst");
+                return null;
+            };
+        }
+
+        function acceptCookies() {
+            localStorage.setItem = _orgSet;
+            localStorage.setItem('viklin_consent', 'true');
+            document.getElementById('cookie-banner').style.display = 'none';
+            location.reload(); // Genindlæs for at aktivere alt
+        }
+    </script>
+
+    <style>
+        :root {
+            --primary-green: #004d00;
+            --accent-green: #7cfc00;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #008000, #90ee90, #006400, #1a1a1a);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            margin: 0;
+            min-height: 100vh;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        header { margin-bottom: 30px; z-index: 2; }
+        #dynamic-greeting { margin-top: 10px; font-weight: bold; }
+
+        /* Cookie Banner Style */
+        #cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0,0,0,0.95);
+            color: white;
+            padding: 25px;
+            z-index: 10000;
+            display: none;
+            text-align: center;
+            border-top: 4px solid var(--accent-green);
+        }
+
+        .cookie-btn {
+            background: var(--accent-green);
+            color: var(--primary-green);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        /* Glow & UI */
+        #cursor-glow {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(124,252,0,0.12) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            padding: 15px 25px;
+            border-radius: 15px;
+            border-left: 5px solid var(--accent-green);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 100;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        .section-title {
+            font-size: 1rem;
+            margin: 40px 0 20px 0;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::after {
+            content: "";
+            height: 1px;
+            background: linear-gradient(90deg, var(--accent-green), transparent);
+            flex-grow: 1;
+            margin-left: 20px;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .button {
+            display: flex;
+            flex-direction: column;
+            padding: 30px;
+            background: white;
+            color: var(--primary-green);
+            text-decoration: none;
+            border-radius: 20px;
+            font-weight: bold;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .button:hover { transform: translateY(-5px); background: var(--accent-green); color: white; }
+        .button span { font-size: 0.8rem; font-weight: normal; margin-top: 5px; color: #444; }
+
+        footer {
+            margin-top: auto;
+            padding: 30px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.6);
+            z-index: 2;
+        }
+
+        footer a { color: var(--accent-green); text-decoration: none; margin: 0 5px; }
+
+        @media (max-width: 600px) {
+            .content { grid-template-columns: 1fr; }
+            footer { flex-direction: column; gap: 10px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- COOKIE BANNER -->
+    <div id="cookie-banner">
+        <h3 style="margin:0; color:var(--accent-green);">🍪 Cookies & Point</h3>
+        <p style="font-size:0.9rem; margin: 10px 0;">Vi bruger cookies til reklamer og localStorage til at gemme dine highscores. Er det okay?</p>
+        <button class="cookie-btn" onclick="acceptCookies()">Det er bare i orden!</button>
+    </div>
+
+    <div id="cursor-glow"></div>
+
+    <header>
+        <img src="logo.png" alt="logo" type"png/image">   
+        <div id="dynamic-greeting">Goddag</div>
+    </header>
+
+    <div class="toast" id="welcome-toast">
+        <div style="font-size: 1.5rem;">🚀</div>
+        <div>
+            <div style="font-weight:bold; color:var(--accent-green)">VikLin siger</div>
+            <div style="font-size:0.8rem;">ER DU KLAR TIL AT HAVE DET SJOVT?</div>
+        </div>
+    </div>
+
+    <div class="section-title">Projekter</div>
+    <div class="content">
+        <a href="hh.html" class="button">Hackerskriver<span>Skriv harmløst hackerkode</span></a>
+        <a href="tetris.html" class="button">Tetris<span>Spil Tetris!!!</span></a>
+        <a href="Alfabetet.html" class="button">Alfabetet<span>Lær alfabetet</span></a>
+        <a href="hhh.html" class="button">Gæt landet<span>Interaktiv læring og leg</span></a>
+        <a href="joke (1).html" class="button">Jokes<span>Find jokes</span></a>
+        <a href="Nytår.html" class="button">Nytårsnedtælling<span>Se tid til nytår</span></a>
+        <a href="Haunted-Maze-3D.html" class="button">Haunted Maze 3D<span>Sjovt 3D-spil</span></a>
+        <a href="snake.html" class="button">Slangespil<span>Klassisk Snake</span></a>
+        <a href="mat.html" class="button">Matematikspillet<span>Øv dine regnestykker</span></a>
+        </div>
+
+    <footer>
+        <div>&copy; 2026 VIKLIN DIGITAL</div>
+        <div>
+            <a href="privatliv.html">Privatliv</a> • <a href="cookies.html">Cookies</a> • <a href="credits.html">Credits</a> •
+            <span id="footer-date"></span> • <span id="clock-footer"></span>
+        </div>
+    </footer>
+
+    <script>
+        // Vis banner hvis ikke accepteret
+        if (!hasConsent) { document.getElementById('cookie-banner').style.display = 'block'; }
+
+        // Mouse Glow
+        const glow = document.getElementById('cursor-glow');
+        document.addEventListener('mousemove', e => {
+            glow.style.left = e.clientX + 'px';
+            glow.style.top = e.clientY + 'px';
+        });
+
+        // Tid & Uptime
+        function updateSystem() {
+            const now = new Date();
+            document.getElementById('clock-footer').innerText = now.toLocaleTimeString('da-DK');
+            document.getElementById('footer-date').innerText = now.toLocaleDateString('da-DK', {day:'numeric', month:'short'});
+            
+            const hour = now.getHours();
+            const greet = hour<5 ? "Godnat" : hour<10 ? "Godmorgen" : hour<18 ? "Goddag" : "Godaften";
+            document.getElementById('dynamic-greeting').innerText = greet;
+        }
+        setInterval(updateSystem, 1000);
+        updateSystem();
+
+        // Skjul toast
+        setTimeout(() => { document.getElementById('welcome-toast').style.display = 'none'; }, 5000);
+    </script>
+</body>
+</html>

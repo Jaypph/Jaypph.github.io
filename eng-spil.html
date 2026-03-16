@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VikLin.fun | Lær engelsk</title>
+  <link rel="icon" href="favikon.png" sizes="any">
+  <style>
+    body {
+      font-family: 'Courier New', Courier, monospace;
+      background: #0d0d0d;
+      color: #fff;
+      text-align: center;
+      margin: 0;
+      overflow-x: hidden;
+    }
+    h1 {
+      color: #ff3300;
+      font-size: 3rem;
+      text-shadow: 0 0 15px #ff0000;
+      margin-top: 20px;
+    }
+    .stats {
+      font-size: 1.5rem;
+      color: #ffd700;
+      margin-bottom: 10px;
+    }
+    .house-container {
+      /* BILLEDE-LINK HER */
+      width: 450px;
+      height: 500px;
+      background: url('https://i.imgur.com') no-repeat center;
+      background-size: contain;
+      margin: 20px auto;
+      position: relative;
+      border: 2px solid #333;
+      box-shadow: 0 0 50px rgba(255, 51, 0, 0.2);
+    }
+    .hotspot {
+      position: absolute;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .hotspot:hover {
+      background: rgba(255, 51, 0, 0.3);
+      box-shadow: 0 0 20px #ff3300;
+      transform: scale(1.1);
+    }
+    /* Placering af zoner */
+    #door { top: 280px; left: 180px; }
+    #window { top: 150px; left: 80px; }
+    #roof { top: 40px; left: 180px; }
+    #basement { top: 380px; left: 130px; }
+    /* NY ZONE TILFØJET */
+    #moon { 
+      top: 10px; 
+      left: 60px; 
+      width: 60px; 
+      height: 60px;
+    }
+
+    #word-display {
+      height: 60px;
+      font-size: 2rem;
+      color: #ff6600;
+      margin: 20px;
+    }
+    .glow { animation: glowAnim 1.5s infinite; }
+    @keyframes glowAnim {
+      0%, 100% { text-shadow: 0 0 10px #ff0000; }
+      50% { text-shadow: 0 0 25px #ff6600; }
+    }
+
+    .input-area { margin-bottom: 50px; }
+    input {
+      padding: 15px;
+      font-size: 1.2rem;
+      border-radius: 8px;
+      border: 2px solid #ff3300;
+      background: #222;
+      color: white;
+      outline: none;
+    }
+    button {
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      background: #ff3300;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover { background: #cc2900; }
+    #result { font-size: 1.5rem; margin-top: 20px; min-height: 30px; }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="button">Tilbage til forsiden</a>
+  <h1>👻 Haunted House | VikLin.fun</h1>
+  <div class="stats">Point: <span id="score">0</span></div>
+  <p>Klik på de lysende zoner i huset og oversæt ordet!</p>
+
+  <div class="house-container">
+    <div class="hotspot" id="door" onclick="selectPart('door')"></div>
+    <div class="hotspot" id="window" onclick="selectPart('window')"></div>
+    <div class="hotspot" id="roof" onclick="selectPart('roof')"></div>
+    <div class="hotspot" id="basement" onclick="selectPart('basement')"></div>
+    <!-- NY ZONE TILFØJET -->
+    <div class="hotspot" id="moon" onclick="selectPart('moon')"></div>
+  </div>
+
+  <div id="word-display" class="glow">Klik på huset...</div>
+
+  <div class="input-area">
+    <input type="text" id="user-input" placeholder="Skriv her..." autocomplete="off">
+    <button onclick="checkAnswer()">Tjek Svar</button>
+    <div id="result"></div>
+  </div>
+
+  <!-- Lydeffekter (Links er genindsat) -->
+  <audio id="sound-ghost" src="https://www.soundjay.com"></audio>
+  <audio id="sound-spider" src="https://www.soundjay.com"></audio>
+  <audio id="sound-witch" src="https://www.soundjay.com"></audio>
+  <audio id="sound-skeleton" src="https://www.soundjay.com"></audio>
+  <!-- NY LYD TILFØJET (Placeholder link, da jeg ikke kan søge efter en ny lyd nu) -->
+  <audio id="sound-moon" src="https://www.soundjay.com"></audio>
+
+
+  <script>
+    const gameData = {
+      door: { danish: "Spøgelse", english: "ghost", sound: "sound-ghost" },
+      window: { danish: "Edderkop", english: "spider", sound: "sound-spider" },
+      roof: { danish: "Heks", english: "witch", sound: "sound-witch" },
+      basement: { danish: "Skelet", english: "skeleton", sound: "sound-skeleton" },
+      moon: { danish: "Månen", english: "moon", sound: "sound-moon" }
+    };
+
+    let currentTarget = null;
+    let score = 0;
+
+    function selectPart(partId) {
+      currentTarget = gameData[partId];
+      
+      // Opdater display
+      document.getElementById("word-display").textContent = `Oversæt: "${currentTarget.danish}"`;
+      document.getElementById("result").textContent = "";
+      document.getElementById("user-input").value = "";
+      document.getElementById("user-input").focus();
+
+      // Afspil lyd (hvis muligt)
+      const sound = document.getElementById(currentTarget.sound);
+      if (sound && sound.src) { // Tjekker om lydkilden eksisterer
+        sound.currentTime = 0;
+        // Bruger .play().catch() for at undgå fejl i browserkonsollen før brugeren har interageret
+        sound.play().catch(e => console.log("Lyd kræver brugerinteraktion først."));
+      }
+    }
+
+    function checkAnswer() {
+      if (!currentTarget) {
+        document.getElementById("result").textContent = "⚠️ Klik på huset først!";
+        return;
+      }
+
+      const userAnswer = document.getElementById("user-input").value.trim().toLowerCase();
+      const resultDiv = document.getElementById("result");
+
+      if (userAnswer === currentTarget.english) {
+        resultDiv.textContent = "🎉 Rigtigt! Well done!";
+        resultDiv.style.color = "#00ff00";
+        score += 10;
+        document.getElementById("score").textContent = score;
+        currentTarget = null; // Nulstil så man skal klikke igen
+      } else {
+        resultDiv.textContent = `❌ Øv! Det rigtige ord er "${currentTarget.english}"`;
+        resultDiv.style.color = "#ff3300";
+      }
+    }
+
+    // Gør det muligt at trykke "Enter" for at svare
+    document.getElementById("user-input").addEventListener("keypress", function(event) {
+      if (event.key === "Enter") {
+        checkAnswer();
+      }
+    });
+  </script>
+
+</body>
+</html>

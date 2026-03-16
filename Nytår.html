@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>VikLin.fun | NYTÅRS NEDTÆLLING</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #6BE4FF;
+    margin: 0;
+    padding: 20px;
+    overflow-x: hidden;
+    position: relative;
+    animation: blinkBackground 3s infinite;
+  }
+
+
+
+  h1 {
+    color: #ff0000dc;
+    font-size: 3em;
+    margin-bottom: 0.2em;
+    animation: blinkText 2s infinite;
+  }
+
+  p {
+    color: #ff0000dc;
+    font-size: 1.2em;
+    margin-bottom: 1em;
+  }
+
+
+  iframe {
+    border-radius: 10px;
+    display: block;
+    margin: 20px auto;
+  }
+
+
+  .footer {
+    margin-top: 20px;
+    font-size: 0.9em;
+  }
+
+
+  .confetti {
+    position: fixed;
+    width: 12px;
+    height: 12px;
+    top: -15px;
+    opacity: 0.9;
+    animation: fall 3s linear infinite;
+    border-radius: 50%;
+  }
+
+
+  @keyframes fall {
+    to {
+      transform: translateY(110vh) rotate(720deg);
+    }
+  }
+</style>
+<link rel="icon" href="favikon.png" sizes="any">
+</head>
+<body>
+  <a href="index.html" class="button">Tilbage til forsiden</a>
+<h1>Nytårs nedtælling 🎉</h1>
+<p>Se hvor lang tid der er til nytår – med musik, fyrværkeri og festlig stemning!🎉🎉🎉</p>
+
+
+<iframe src="https://scratch.mit.edu/projects/1195289693/embed" allowtransparency="true" width="700" height="617" frameborder="0" scrolling="no" allowfullscreen></iframe>
+
+    <footer>
+        <h10>©2026 VIKLIN DIGITAL • DESIGNET TIL FREMTIDEN</h10>
+    </footer>
+
+<script>
+function createConfetti() {
+  const confetti = document.createElement('div');
+  confetti.classList.add('confetti');
+  confetti.style.left = Math.random() * window.innerWidth + 'px';
+  confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+  confetti.style.width = confetti.style.height = 8 + Math.random() * 12 + 'px';
+  confetti.style.animationDuration = 2 + Math.random() * 2 + 's';
+  document.body.appendChild(confetti);
+  setTimeout(() => { confetti.remove(); }, 4000);
+}
+
+
+setInterval(createConfetti, 150);
+</script>
+
+
+</body>
+</html>

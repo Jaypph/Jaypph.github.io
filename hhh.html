@@ -1,0 +1,151 @@
+﻿<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <title>VikLin.fun | Gæt Landet</title>
+    <style>
+        body { font-family: 'Arial', sans-serif; background: #1a1a2e; color: white; text-align: center; padding-top: 50px; }
+        .quiz-container { background: #16213e; padding: 30px; border-radius: 20px; display: inline-block; border: 2px solid #0f3460; min-width: 350px; }
+        .hint-box { background: #0f3460; padding: 20px; border-radius: 10px; margin: 20px 0; font-size: 1.2em; border-left: 5px solid #e94560; }
+        input { padding: 10px; font-size: 18px; border-radius: 5px; border: none; width: 200px; margin-bottom: 10px; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 5px; border: none; background: #e94560; color: white; font-weight: bold; }
+        button:disabled { background: #555; }
+        #resultat { font-size: 20px; margin-top: 20px; font-weight: bold; height: 30px; }
+        .stats { color: #95a5a6; margin-bottom: 10px; }
+    </style>
+    <link rel="icon" href="favikon.png" sizes="any"></head>
+<body>
+    <a href="index.html" class="button">Tilbage til forsiden</a>
+
+<div class="quiz-container" id="quiz-box">
+    <h1>Gæt Landet 🌍</h1>
+    <div class="stats">Lande tilbage: <span id="count">10</span></div>
+    
+    <div id="hint" class="hint-box">Indlæser...</div>
+
+
+    <input type="text" id="answer" placeholder="Skriv landets navn..." onkeydown="if(event.key==='Enter' && !this.disabled) check()">
+    <br>
+    <button id="submit-btn" onclick="check()">Svar</button>
+    <button id="next-btn" onclick="nextRound()" style="display:none;">Næste Land ➔</button>
+
+
+    <div id="resultat"></div>
+</div>
+    <footer>
+        <div>©2026 VikLin.fun • DESIGNET TIL FREMTIDEN</div>
+    </footer>
+
+<script>
+    const originalList = [
+    { n: "Danmark", h: "Dette land er kendt for H.C. Andersen og Legoland." },
+    { n: "Norge", h: "Dette land er berømt for sine dybe fjorde og høje fjelde." },
+    { n: "Frankrig", h: "Her kan du se Eiffeltårnet og spise croissanter." },
+    { n: "Italien", h: "Landet er formet som en støvle og er kendt for pizza og pasta." },
+    { n: "Spanien", h: "Dette land er kendt for tyrefægtning, tapas og masser af sol." },
+    { n: "Tyskland", h: "Vores nabo mod syd, kendt for deres biler og Berlinmuren." },
+    { n: "Japan", h: "Et ø-rige i østen kendt for samuraier, sushi og anime." },
+    { n: "USA", h: "Her finder du Hollywood, Frihedsgudinden og 50 stater." },
+    { n: "England", h: "Landet med Big Ben, rødder i London og masser af te." },
+    { n: "Sverige", h: "Vores nabo kendt for IKEA, ABBA og kødboller." },
+    { n: "Brasilien", h: "Her finder du Amazonas-regnskoven og verdens største karneval." },
+    { n: "Egypten", h: "Landet med de mægtige pyramider, Sfinksen og Nilen." },
+    { n: "Australien", h: "Et kontinent kendt for kænguruer, koalaer og Operahuset i Sydney." },
+    { n: "Grækenland", h: "Demokratiets vugge med hvide huse og masser af øer i Middelhavet." },
+    { n: "Kina", h: "Her kan du gå på en meget lang mur og se pandabjørne." },
+    { n: "Indien", h: "Kendt for Taj Mahal, krydret mad og Bollywood-film." },
+    { n: "Canada", h: "Verdens næststørste land, kendt for ahornsirup og ishockey." },
+    { n: "Mexico", h: "Her spiser man tacos og fejrer 'De Dødes Dag'." },
+    { n: "Holland", h: "Landet med masser af vindmøller, tulipaner og træsko." },
+    { n: "Schweiz", h: "Kendt for Alperne, dyre ure og lækker chokolade." },
+    { n: "Thailand", h: "Smilets land med smukke strande og lækker gademad." },
+    { n: "Island", h: "Landet af ild og is med vulkaner og varme kilder." },
+    { n: "Argentina", h: "Her danser man Tango og har nogle af verdens bedste fodboldspillere." },
+    { n: "Portugal", h: "Landet er kendt for Portvin, Fado-musik og korkproduktion." },
+    { n: "Tyrkiet", h: "Ligger i både Europa og Asien og er kendt for basarer og kebab." },
+    { n: "Finland", h: "Landet med de tusind søer og julemandens officielle hjemsted." },
+    { n: "Sydafrika", h: "Her kan du tage på safari og se 'The Big Five' vilde dyr." },
+    { n: "Østrig", h: "Kendt for Mozart, Wienerschnitzel og skiløb i bjergene." },
+    { n: "Polen", h: "Vores nabo mod øst over Østersøen, kendt for byen Krakow." },
+    { n: "Irland", h: "Den grønne ø kendt for pubber, leprechauns og St. Patrick's Day." }
+];
+
+
+
+    let currentList = [];
+    let correctCount = 0;
+    let currentItem = null;
+
+
+    function start() {
+        // Bland listen og tag de første 10
+        currentList = [...originalList].sort(() => Math.random() - 0.5);
+        correctCount = 0;
+        nextRound();
+    }
+
+
+    function nextRound() {
+        if (currentList.length === 0) {
+            showFinalScore();
+            return;
+        }
+
+
+        // Ryd op fra sidste runde
+        document.getElementById('resultat').innerText = "";
+        document.getElementById('answer').value = "";
+        document.getElementById('answer').disabled = false;
+        document.getElementById('submit-btn').style.display = "inline-block";
+        document.getElementById('next-btn').style.display = "none";
+        document.getElementById('count').innerText = currentList.length;
+
+
+        // Vælg det næste land i rækken
+        currentItem = currentList.pop();
+        document.getElementById('hint').innerText = currentItem.h;
+        document.getElementById('answer').focus();
+    }
+
+
+    function check() {
+        const userGuess = document.getElementById('answer').value.trim().toLowerCase();
+        const correctAnswer = currentItem.n.toLowerCase();
+        const resDiv = document.getElementById('resultat');
+
+
+        if (userGuess === "") return;
+
+
+        // Lås input
+        document.getElementById('answer').disabled = true;
+        document.getElementById('submit-btn').style.display = "none";
+        document.getElementById('next-btn').style.display = "inline-block";
+
+
+        if (userGuess === correctAnswer) {
+            resDiv.innerText = "RIGTIGT! 🎉";
+            resDiv.style.color = "#2ecc71";
+            correctCount++;
+        } else {
+            resDiv.innerText = "FORKERT. Det var " + currentItem.n;
+            resDiv.style.color = "#e74c3c";
+        }
+    }
+
+
+    function showFinalScore() {
+        const box = document.getElementById('quiz-box');
+        box.innerHTML = `
+            <h1>Slut! 🏆</h1>
+            <p style="font-size: 24px;">Du fik ${correctCount} ud af 30 rigtige!</p>
+            <button onclick="location.reload()">Prøv igen</button>
+        `;
+    }
+
+
+    // Start spillet første gang
+    start();
+</script>
+</body>
+</html>
