@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<title>Joke Maker</title>
+<style>
+  body {
+    background: #1e1e1e;
+    color: white;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .box {
+    background: #333;
+    padding: 30px;
+    border-radius: 15px;
+    width: 500px;
+    text-align: center;
+    box-shadow: 0 0 20px black;
+  }
+
+  button {
+    margin-top: 20px;
+    padding: 12px 25px;
+    font-size: 18px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    background: #4da6ff;
+  }
+
+  #joke {
+    font-size: 20px;
+    min-height: 80px;
+  }
+</style>
+</head>
+<body>
+
+<div class="box">
+  <h1>😂 Super Joke Maker</h1>
+  <p id="joke">Klik på knappen for en joke!</p>
+  <button onclick="newJoke()">Ny joke</button>
+  <p id="counter"></p>
+</div>
+
+<script>
+let jokes = [
+  "Hvorfor kan spøgelser ikke lyve? – Fordi man kan se lige igennem dem!",
+  "Hvad sagde den ene væg til den anden? – Vi mødes på hjørnet!",
+  "Hvorfor tog matematikbogen til lægen? – Den havde for mange problemer.",
+  "Hvad kalder man en fisk med slips? – Sofistikeret.",
+  "Hvorfor kan skeletter ikke slås? – De har ikke nerver til det.",
+  "Hvad sagde computeren til brugeren? – Du har for mange cookies!",
+  "Hvorfor gik kyllingen over vejen? – For at komme på den anden side.",
+  "Hvad kalder man en sovende tyr? – En bulldozer.",
+  "Hvorfor er fodboldspillere dårlige til matematik? – De kan ikke lide at tælle mål.",
+  "Hvad sagde kaffen til teen? – Du ser lidt tynd ud.",
+  "Hvorfor er der ingen der vil købe zoo - den er for dyr.",
+  "Hvad kalder man et svin der bor på mars - et marssvin.",
+  "Hvorfor går skyen i skole - den skal lære at regne.",
+  "hvorfor var jens glad for at bygge et puzzlespil på 6 måneder - fordi der stod 2-4 år.",
+  "Hvad sagde den ene væg til den anden - vi mødes på hjørnet.",
+  "Hvad laver edderkoppen når den keder sig - den går på nettet.",
+];
+
+// kopi så vi kan tømme listen
+let unusedJokes = [...jokes];
+
+function newJoke() {
+  // hvis alle er brugt
+  if (unusedJokes.length === 0) {
+    unusedJokes = [...jokes];
+    alert("Alle jokes er brugt – starter forfra!");
+  }
+
+  const index = Math.floor(Math.random() * unusedJokes.length);
+  const joke = unusedJokes[index];
+
+  // fjern den så den ikke kan komme igen
+  unusedJokes.splice(index, 1);
+
+  document.getElementById("joke").innerText = joke;
+  document.getElementById("counter").innerText =
+    "Tilbage: " + unusedJokes.length + " jokes";
+}
+</script>
+
+</body>
+</html>
