@@ -113,22 +113,11 @@
     <a href="index.html" class="button">Tilbage til forsiden</a>
     <h1>Velkommen til VikLin.fun Shop</h1>
     <div class="products">
-        <div class="product">
-            <h3>iPhone 12/13/14 Cover – Sort - 3D printet</h3>
-            <p>Pris: 20 DKK</p>
-            <button onclick="addToCart('iPhone 12/13/14 Cover – sort', 20)">Tilføj til kurv</button>
+        <div class="products" id="product-container">
+    <!-- Produkterne indlæses herfra serveren -->
+            <p>Henter produkter...</p>
         </div>
 
-        <div class="product">
-            <h3> VikLin.fun iPhone 11 Pro/XS/X Cover - Sort - 3D printet</h3>
-            <p>Pris: 20 DKK</p>
-            <button onclick="addToCart(' VikLin.fun iPhone 11 Pro/XS/X cover - sort', 20)">Tilføj til kurv</button>
-        </div>
-        <div class="product">
-            <h3> VikLin.fun iPhone 7/8/SE Cover - Sort - 3D printet</h3>
-            <p>Pris: 20 DKK</p>
-            <button onclick="addToCart(' VikLin.fun iPhone 7/8/SE cover - sort', 20)">Tilføj til kurv</button>
-        </div>
         </div>
 <!-- Cookie politik popup -->
 <div id="cookie-banner" style="
@@ -183,125 +172,62 @@
         <div>&copy; 2026 VIKLIN DIGITAL • DESIGNET TIL FREMTIDEN</div>
     </footer>
 <script>
-    const VAT = 0.25; // moms
-    let localStorageAllowed = false; // default
+const API_URL = "https://jaypph-github-io-js.onrender.com"; // DIN RENDER URL
+const VAT = 0.25;
+let cart = [];
 
-    // Check om brugeren allerede har accepteret cookies
-    if(localStorage.getItem('cookiesAccepted') === 'true'){
-        localStorageAllowed = true;
-        document.getElementById('cookie-banner').style.display = 'none';
+// 1. Hent produkter fra serveren når siden loader
+async function fetchProducts() {
+    try {
+        const response = await fetch(`${API_URL}/api/products`);
+        const produkter = await response.json();
+        displayProducts(produkter);
+    } catch (error) {
+        document.getElementById('product-container').innerHTML = "<p>Kunne ikke hente priser. Prøv igen senere.</p>";
     }
+}
 
-    // Accepter cookies
-    document.getElementById('accept-cookies').onclick = () => {
-        localStorageAllowed = true;
-        localStorage.setItem('cookiesAccepted', 'true');
-        document.getElementById('cookie-banner').style.display = 'none';
-        saveCart(); // gem kurv hvis der allerede er varer
-    }
+// 2. Vis produkterne i din HTML
+function displayProducts(produkter) {
+    const container = document.getElementById('product-container');
+    container.innerHTML = ""; // Tøm "Henter..." besked
 
-    // Afvis cookies
-    document.getElementById('decline-cookies').onclick = () => {
-        localStorageAllowed = false;
-        document.getElementById('cookie-banner').style.display = 'none';
-        // vi gemmer intet i localStorage
-    }
+    produkter.forEach(p => {
+        const div = document.createElement('div');
+        div.className = 'product';
+        div.innerHTML = `
+            <h3>${p.navn}</h3>
+            <p>Pris: ${p.pris} DKK</p>
+            <button onclick="addToCart('${p.navn}', ${p.pris})">Tilføj til kurv</button>
+        `;
+        container.appendChild(div);
+    });
+}
 
-    // Hent kurv fra localStorage kun hvis accepteret
-    let cart = [];
-    let total = 0;
-    if(localStorageAllowed){
-        cart = JSON.parse(localStorage.getItem('cart')) || [];
-        total = parseFloat(localStorage.getItem('total')) || 0;
-    }
-
+function addToCart(name, price) {
+    cart.push({ name, price });
     updateCart();
+}
 
-    function addToCart(name, price) {
-        cart.push({ name, price });
-        total += price;
-        if(localStorageAllowed) saveCart();
-        updateCart();
-    }
+function updateCart() {
+    const cartList = document.getElementById("cart-items");
+    const totalSpan = document.getElementById("total");
+    cartList.innerHTML = "";
+    let total = 0;
 
-    function removeFromCart(index) {
-        total -= cart[index].price;
-        cart.splice(index, 1);
-        if(localStorageAllowed) saveCart();
-        updateCart();
-    }
+    cart.forEach((item, index) => {
+        total += item.price;
+        const li = document.createElement("li");
+        li.innerHTML = `${item.name} - ${item.price} DKK <br> 
+                        <small>Inkl. moms: ${(item.price * 1.25).toFixed(2)} DKK</small>`;
+        cartList.appendChild(li);
+    });
+    totalSpan.textContent = total.toFixed(2);
+}
 
-    function updateCart() {
-        const cartList = document.getElementById("cart-items");
-        cartList.innerHTML = "";
+// Start hentning
+fetchProducts();
 
-        cart.forEach((item, index) => {
-            const li = document.createElement("li");
-            li.style.display = "flex";
-            li.style.flexDirection = "column";
-            li.style.justifyContent = "space-between";
-            li.style.alignItems = "flex-start";
-            li.style.marginBottom = "12px";
-            li.style.padding = "5px 0";
-
-            const text = document.createElement("span");
-            text.textContent = `${item.name} - ${item.price.toFixed(2)} DKK (ekskl. moms)`;
-
-            const vatLine = document.createElement("small");
-            vatLine.textContent = `Inkl. moms: ${(item.price * (1 + VAT)).toFixed(2)} DKK`;
-            vatLine.style.color = "#90ee90";
-            vatLine.style.marginTop = "2px";
-
-            const removeBtn = document.createElement("button");
-            removeBtn.innerHTML = "✖";
-            removeBtn.style.background = "transparent";
-            removeBtn.style.border = "none";
-            removeBtn.style.color = "#7cfc00";
-            removeBtn.style.fontSize = "16px";
-            removeBtn.style.cursor = "pointer";
-            removeBtn.style.alignSelf = "flex-end";
-            removeBtn.style.transition = "color 0.2s";
-            removeBtn.onmouseover = () => removeBtn.style.color = "#004d00";
-            removeBtn.onmouseout = () => removeBtn.style.color = "#7cfc00";
-            removeBtn.onclick = () => removeFromCart(index);
-
-            li.appendChild(text);
-            li.appendChild(vatLine);
-            li.appendChild(removeBtn);
-            cartList.appendChild(li);
-        });
-
-        document.getElementById("total").textContent = total.toFixed(2);
-
-        let totalWithVAT = document.getElementById("total-vat");
-        if (!totalWithVAT) {
-            totalWithVAT = document.createElement("div");
-            totalWithVAT.id = "total-vat";
-            totalWithVAT.style.fontSize = "0.9em";
-            totalWithVAT.style.color = "#90ee90";
-            document.getElementById("cart").appendChild(totalWithVAT);
-        }
-        totalWithVAT.textContent = `Total inkl. moms: ${(total * (1 + VAT)).toFixed(2)} DKK`;
-    }
-
-    function saveCart() {
-        if(localStorageAllowed){
-            localStorage.setItem('cart', JSON.stringify(cart));
-            localStorage.setItem('total', total);
-        }
-    }
-
-    function checkout() {
-        if(cart.length === 0){
-            alert("Din kurv er tom!");
-            return;
-        }
-        alert("Tak for din ordre!");
-        cart = [];
-        total = 0;
-        if(localStorageAllowed) saveCart();
-        updateCart();
-    }
 </script>
 </body>
 </html>
