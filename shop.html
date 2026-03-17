@@ -224,6 +224,39 @@ function updateCart() {
     });
     totalSpan.textContent = total.toFixed(2);
 }
+async function checkout() {
+    if (cart.length === 0) {
+        alert("Din kurv er tom!");
+        return;
+    }
+
+    const totalPris = cart.reduce((sum, item) => sum + item.price, 0);
+
+    try {
+        const response = await fetch(`${API_URL}/api/checkout`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                cart: cart,
+                total: totalPris
+            })
+        });
+
+        const resultat = await response.json();
+        alert(resultat.message);
+        
+        // Tøm kurven efter succesfuldt køb
+        cart = [];
+        updateCart();
+        if(localStorageAllowed) localStorage.removeItem('cart');
+        
+    } catch (error) {
+        console.error("Fejl ved betaling:", error);
+        alert("Der skete en fejl. Prøv igen senere.");
+    }
+}
 
 // Start hentning
 fetchProducts();
