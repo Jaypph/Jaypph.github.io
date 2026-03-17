@@ -183,7 +183,7 @@ async function fetchProducts() {
         const produkter = await response.json();
         displayProducts(produkter);
     } catch (error) {
-        document.getElementById('product-container').innerHTML = "<p>Kunne ikke hente priser. Prøv igen senere.</p>";
+        document.getElementById('product-container').innerHTML = "<p>Kunne ikke hente priser.</p>";
     }
 }
 
