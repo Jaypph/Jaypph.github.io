@@ -3,27 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VikLin.fun | STARTSIDE</title>
+<title>VikLin.fun</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #008000, #1a1a1a);
+    background: linear-gradient(135deg, #0a7a2f, #111);
     color: white;
 }
 
-/* TOP BAR */
+/* TOPBAR */
 .topbar {
     display: flex;
     justify-content: space-between;
-    padding: 15px;
     align-items: center;
+    padding: 15px;
 }
 
 .profile {
-    position: relative;
-    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .profile img {
@@ -31,6 +34,7 @@ body {
     height: 42px;
     border-radius: 50%;
     border: 2px solid #7cfc00;
+    cursor: pointer;
 }
 
 /* LOGIN MODAL */
@@ -43,105 +47,137 @@ body {
     align-items: center;
 }
 
-.modal-box {
-    background: #111;
-    padding: 25px;
-    border-radius: 15px;
+.modal {
+    background: #1a1a1a;
+    padding: 20px;
+    border-radius: 12px;
     width: 300px;
     text-align: center;
 }
 
 button {
     width: 100%;
-    margin-top: 10px;
     padding: 10px;
+    margin-top: 10px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
 }
 
-.google { background: #db4437; color: white; }
-.microsoft { background: #0078d4; color: white; }
-.email { background: #555; color: white; }
+.github { background: #333; color: white; }
+.email { background: #2d7; color: black; }
+.guest { background: #555; color: white; }
 
-.small {
-    font-size: 12px;
-    opacity: 0.7;
+#content {
+    padding: 20px;
 }
 
-.logout, .delete {
-    margin-top: 10px;
-    background: #222;
-    color: white;
-}
-
-.delete { background: darkred; }
-
-/* LOCK SCREEN */
-.locked {
-    display: none;
-    text-align: center;
-    margin-top: 50px;
+.card {
+    background: white;
+    color: black;
+    padding: 20px;
+    border-radius: 12px;
+    margin: 10px 0;
 }
 </style>
 </head>
 
 <body>
 
-<!-- TOPBAR -->
 <div class="topbar">
     <h2>VikLin.fun</h2>
 
-    <div class="profile" onclick="toggleProfileMenu()">
-        <img id="profileIcon" src="https://www.gravatar.com/avatar/?d=mp">
+    <div class="profile">
+        <span id="userStatus">Guest</span>
+        <img id="avatar" src="https://api.dicebear.com/7.x/identicon/svg?seed=guest"
+             onclick="openLogin()">
     </div>
-</div>
-
-<!-- LOCK SCREEN -->
-<div class="locked" id="lockedScreen">
-    <h2>🔒 Login kræves</h2>
-    <button onclick="openLogin()">Log ind</button>
 </div>
 
 <!-- LOGIN MODAL -->
 <div id="loginModal">
-    <div class="modal-box">
-        <h3>VikLin Login</h3>
+    <div class="modal">
+        <h3>Log ind (valgfrit)</h3>
 
-        <button class="google" onclick="login('google')">Google</button>
-        <button class="microsoft" onclick="login('microsoft')">Microsoft</button>
-        <button class="email" onclick="login('proton')">Proton / Email</button>
+        <button class="github" onclick="loginGitHub()">Login med GitHub</button>
 
-        <p class="small">Demo login (localStorage)</p>
+        <input id="emailInput" placeholder="Email" style="width:100%;padding:8px;margin-top:10px;">
+        <button class="email" onclick="loginEmail()">Login med Email</button>
 
-        <button onclick="closeLogin()">Luk</button>
+        <button class="guest" onclick="closeLogin()">Spil uden login</button>
     </div>
 </div>
 
 <!-- CONTENT -->
-<div id="appContent" style="display:none; padding:20px;">
-    <h1>Velkommen til VikLin</h1>
-    <p>Du er logget ind 🚀</p>
+<div id="content">
 
-    <button class="logout" onclick="logout()">Log ud</button>
-    <button class="delete" onclick="deleteAccount()">Slet konto</button>
+    <h1>🎮 Spil Hub</h1>
+    <p>Du kan altid spille — login er kun til cloud features.</p>
+
+    <div class="card">
+        <h3>Tetris</h3>
+        <button onclick="playGame('tetris')">Spil</button>
+    </div>
+
+    <div class="card">
+        <h3>Snake</h3>
+        <button onclick="playGame('snake')">Spil</button>
+    </div>
+
+    <div class="card">
+        <h3>Math Game</h3>
+        <button onclick="playGame('math')">Spil</button>
+    </div>
+
 </div>
 
 <script>
-let user = JSON.parse(localStorage.getItem("viklinUser"));
+/* =========================
+   SUPABASE INIT
+========================= */
+const supabase = supabase.createClient(
+  "YOUR_SUPABASE_URL",
+  "YOUR_SUPABASE_ANON_KEY"
+);
 
-function updateUI() {
-    if(user) {
-        document.getElementById("appContent").style.display = "block";
-        document.getElementById("lockedScreen").style.display = "none";
-        document.getElementById("profileIcon").src =
-            `https://api.dicebear.com/7.x/identicon/svg?seed=${user.email}`;
+/* =========================
+   GUEST SYSTEM (ALTID AKTIV)
+========================= */
+function getGuestId() {
+    let id = localStorage.getItem("viklin_guest");
+    if (!id) {
+        id = crypto.randomUUID();
+        localStorage.setItem("viklin_guest", id);
+    }
+    return id;
+}
+
+/* =========================
+   USER STATE
+========================= */
+let currentUser = null;
+
+async function loadUser() {
+    const { data } = await supabase.auth.getUser();
+
+    if (data.user) {
+        currentUser = data.user;
+
+        document.getElementById("userStatus").innerText = data.user.email;
+
+        document.getElementById("avatar").src =
+            data.user.user_metadata?.avatar_url ||
+            `https://api.dicebear.com/7.x/identicon/svg?seed=${data.user.email}`;
     } else {
-        document.getElementById("appContent").style.display = "none";
-        document.getElementById("lockedScreen").style.display = "block";
+        currentUser = { type: "guest", id: getGuestId() };
     }
 }
 
+loadUser();
+
+/* =========================
+   LOGIN UI
+========================= */
 function openLogin() {
     document.getElementById("loginModal").style.display = "flex";
 }
@@ -150,41 +186,61 @@ function closeLogin() {
     document.getElementById("loginModal").style.display = "none";
 }
 
-function login(provider) {
-    let email = prompt("Indtast email (demo login):");
+/* =========================
+   LOGIN METHODS
+========================= */
+async function loginGitHub() {
+    await supabase.auth.signInWithOAuth({
+        provider: "github"
+    });
+}
 
-    if(!email) return;
+async function loginEmail() {
+    const email = document.getElementById("emailInput").value;
 
-    user = {
-        email: email,
-        provider: provider
-    };
+    await supabase.auth.signInWithOtp({
+        email: email
+    });
 
-    localStorage.setItem("viklinUser", JSON.stringify(user));
+    alert("Tjek din email for login-link 🚀");
     closeLogin();
-    updateUI();
 }
 
-function logout() {
-    localStorage.removeItem("viklinUser");
-    user = null;
-    updateUI();
+/* =========================
+   GAME LAUNCH (GUEST SAFE)
+========================= */
+function playGame(game) {
+    alert("Starter: " + game + " (guest eller login virker)");
 }
 
-function deleteAccount() {
-    if(confirm("Er du sikker på at du vil slette din VikLin konto?")) {
-        localStorage.removeItem("viklinUser");
-        user = null;
-        updateUI();
-        alert("Konto slettet.");
+/* =========================
+   CLOUD SAVE (READY HOOK)
+========================= */
+async function saveData(game, data) {
+    if (!currentUser || currentUser.type === "guest") {
+        localStorage.setItem("save_" + game, JSON.stringify(data));
+        return;
     }
+
+    await supabase.from("saves").upsert({
+        user_id: currentUser.id,
+        game,
+        data
+    });
 }
 
-function toggleProfileMenu() {
-    if(!user) openLogin();
-}
+/* =========================
+   LEADERBOARD HOOK
+========================= */
+async function submitScore(game, score) {
+    if (!currentUser || currentUser.type === "guest") return;
 
-updateUI();
+    await supabase.from("leaderboard").insert({
+        user_id: currentUser.id,
+        game,
+        score
+    });
+}
 </script>
 
 </body>
