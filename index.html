@@ -5,79 +5,91 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VikLin.fun</title>
 
+<!-- SAME FAVICON AS YOUR ORIGINAL -->
+<link rel="icon" href="favikon.png" sizes="any">
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+:root {
+    --green1: #008000;
+    --green2: #7cfc00;
+    --dark: #0f0f0f;
+}
+
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #0a7a2f, #111);
+    font-family: "Segoe UI", sans-serif;
+    background: linear-gradient(135deg, var(--green1), #111, var(--green1));
+    background-size: 400% 400%;
+    animation: bg 12s ease infinite;
     color: white;
+}
+
+@keyframes bg {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
 }
 
 /* TOPBAR */
 .topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px;
 }
 
 .profile {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    cursor:pointer;
 }
 
 .profile img {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    border: 2px solid #7cfc00;
-    cursor: pointer;
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    border:2px solid var(--green2);
 }
 
 /* LOGIN MODAL */
 #loginModal {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.8);
-    display: none;
-    justify-content: center;
-    align-items: center;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.8);
+    display:none;
+    justify-content:center;
+    align-items:center;
 }
 
 .modal {
-    background: #1a1a1a;
-    padding: 20px;
-    border-radius: 12px;
-    width: 300px;
-    text-align: center;
+    background:#111;
+    padding:20px;
+    border-radius:12px;
+    width:300px;
 }
 
 button {
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
+    width:100%;
+    margin-top:10px;
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
 }
 
-.github { background: #333; color: white; }
-.email { background: #2d7; color: black; }
-.guest { background: #555; color: white; }
-
-#content {
-    padding: 20px;
-}
+.github { background:#333; color:white; }
+.email { background:var(--green2); color:black; }
+.guest { background:#555; color:white; }
 
 .card {
-    background: white;
-    color: black;
-    padding: 20px;
-    border-radius: 12px;
-    margin: 10px 0;
+    background:white;
+    color:black;
+    margin:10px;
+    padding:15px;
+    border-radius:10px;
 }
 </style>
 </head>
@@ -87,159 +99,107 @@ button {
 <div class="topbar">
     <h2>VikLin.fun</h2>
 
-    <div class="profile">
-        <span id="userStatus">Guest</span>
-        <img id="avatar" src="https://api.dicebear.com/7.x/identicon/svg?seed=guest"
-             onclick="openLogin()">
+    <div class="profile" onclick="openLogin()">
+        <span id="userLabel">Guest</span>
+        <img id="avatar" src="favikon.png">
     </div>
 </div>
 
-<!-- LOGIN MODAL -->
+<!-- LOGIN -->
 <div id="loginModal">
     <div class="modal">
-        <h3>Log ind (valgfrit)</h3>
+        <h3>Log ind</h3>
 
-        <button class="github" onclick="loginGitHub()">Login med GitHub</button>
+        <button class="github" onclick="loginGitHub()">GitHub login</button>
 
-        <input id="emailInput" placeholder="Email" style="width:100%;padding:8px;margin-top:10px;">
-        <button class="email" onclick="loginEmail()">Login med Email</button>
+        <input id="email" placeholder="Email" style="width:100%;padding:8px;margin-top:10px;">
+        <button class="email" onclick="loginEmail()">Email login</button>
 
-        <button class="guest" onclick="closeLogin()">Spil uden login</button>
+        <button class="guest" onclick="closeLogin()">Spil som gæst</button>
     </div>
 </div>
 
 <!-- CONTENT -->
-<div id="content">
+<div style="padding:20px;">
+    <h1>🎮 Spil</h1>
 
-    <h1>🎮 Spil Hub</h1>
-    <p>Du kan altid spille — login er kun til cloud features.</p>
-
-    <div class="card">
-        <h3>Tetris</h3>
-        <button onclick="playGame('tetris')">Spil</button>
-    </div>
-
-    <div class="card">
-        <h3>Snake</h3>
-        <button onclick="playGame('snake')">Spil</button>
-    </div>
-
-    <div class="card">
-        <h3>Math Game</h3>
-        <button onclick="playGame('math')">Spil</button>
-    </div>
-
+    <div class="card">Tetris <button onclick="play()">Spil</button></div>
+    <div class="card">Snake <button onclick="play()">Spil</button></div>
 </div>
 
 <script>
 /* =========================
-   SUPABASE INIT
+   SUPABASE INIT (FIXED)
 ========================= */
-const supabase = supabase.createClient(
-  "YOUR_SUPABASE_URL",
-  "YOUR_SUPABASE_ANON_KEY"
+const supabaseClient = supabase.createClient(
+  "https://bmsfrhbmgwqzphszpxwb.supabase.co",
+  "sb_publishable_F8_v0IAh3djW12vfau-9iQ_U_On8PKB"
 );
 
 /* =========================
-   GUEST SYSTEM (ALTID AKTIV)
+   UI
 ========================= */
-function getGuestId() {
-    let id = localStorage.getItem("viklin_guest");
-    if (!id) {
-        id = crypto.randomUUID();
-        localStorage.setItem("viklin_guest", id);
-    }
-    return id;
+function openLogin(){
+    document.getElementById("loginModal").style.display="flex";
+}
+
+function closeLogin(){
+    document.getElementById("loginModal").style.display="none";
 }
 
 /* =========================
-   USER STATE
+   AUTH STATE (IMPORTANT FIX)
 ========================= */
-let currentUser = null;
+let user = null;
 
-async function loadUser() {
-    const { data } = await supabase.auth.getUser();
+async function loadUser(){
+    const { data } = await supabaseClient.auth.getUser();
 
-    if (data.user) {
-        currentUser = data.user;
+    if(data.user){
+        user = data.user;
 
-        document.getElementById("userStatus").innerText = data.user.email;
+        document.getElementById("userLabel").innerText = user.email;
 
         document.getElementById("avatar").src =
-            data.user.user_metadata?.avatar_url ||
-            `https://api.dicebear.com/7.x/identicon/svg?seed=${data.user.email}`;
-    } else {
-        currentUser = { type: "guest", id: getGuestId() };
+            user.user_metadata?.avatar_url ||
+            `https://api.dicebear.com/7.x/identicon/svg?seed=${user.email}`;
     }
 }
+
+supabaseClient.auth.onAuthStateChange(() => {
+    loadUser();
+});
 
 loadUser();
 
 /* =========================
-   LOGIN UI
+   LOGIN FIXED
 ========================= */
-function openLogin() {
-    document.getElementById("loginModal").style.display = "flex";
-}
-
-function closeLogin() {
-    document.getElementById("loginModal").style.display = "none";
-}
-
-/* =========================
-   LOGIN METHODS
-========================= */
-async function loginGitHub() {
-    await supabase.auth.signInWithOAuth({
-        provider: "github"
+async function loginGitHub(){
+    await supabaseClient.auth.signInWithOAuth({
+        provider:"github",
+        options:{
+            redirectTo: window.location.origin
+        }
     });
 }
 
-async function loginEmail() {
-    const email = document.getElementById("emailInput").value;
+async function loginEmail(){
+    const email = document.getElementById("email").value;
 
-    await supabase.auth.signInWithOtp({
-        email: email
+    await supabaseClient.auth.signInWithOtp({
+        email
     });
 
-    alert("Tjek din email for login-link 🚀");
+    alert("Tjek din email 📩");
     closeLogin();
 }
 
 /* =========================
-   GAME LAUNCH (GUEST SAFE)
+   GAME (guest safe)
 ========================= */
-function playGame(game) {
-    alert("Starter: " + game + " (guest eller login virker)");
-}
-
-/* =========================
-   CLOUD SAVE (READY HOOK)
-========================= */
-async function saveData(game, data) {
-    if (!currentUser || currentUser.type === "guest") {
-        localStorage.setItem("save_" + game, JSON.stringify(data));
-        return;
-    }
-
-    await supabase.from("saves").upsert({
-        user_id: currentUser.id,
-        game,
-        data
-    });
-}
-
-/* =========================
-   LEADERBOARD HOOK
-========================= */
-async function submitScore(game, score) {
-    if (!currentUser || currentUser.type === "guest") return;
-
-    await supabase.from("leaderboard").insert({
-        user_id: currentUser.id,
-        game,
-        score
-    });
+function play(){
+    alert("Spil starter (guest eller login virker)");
 }
 </script>
 
