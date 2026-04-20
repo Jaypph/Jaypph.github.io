@@ -1,207 +1,229 @@
-<!DOCTYPE html>
+gør så at man kan logge ind med proton, google og microsoft. ens profilikon skal vises oppe i højre hjørne.
+man skal kunne slette ens konto  hvis man har lyst, og man skal lave en VikLin konto før at man kan logge ind.
+﻿<!DOCTYPE html>
 <html lang="da">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VikLin.fun</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="VikLin.fun er en hjemmeside med sjove spil og en shop hvor man kan købe 3D printede ting.">  
+    <title>VikLin.fun | STARTSIDE</title>
+    <link rel="icon" href="favikon.png" sizes="any">
+    
+    <!-- COOKIE SYSTEM SCRIPT (Skal ligge før alt andet) -->
+    <script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="a6d92505-46ca-4529-8cd1-4930dd9d1ff4" data-blockingmode="auto" type="text/javascript"></script>
 
-<!-- SAME FAVICON AS YOUR ORIGINAL -->
-<link rel="icon" href="favikon.png" sizes="any">
+    <style>
+        :root {
+            --primary-green: #004d00;
+            --accent-green: #7cfc00;
+        }
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #008000, #90ee90, #006400, #1a1a1a);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            margin: 0;
+            min-height: 100vh;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow-x: hidden;
+        }
 
-<style>
-:root {
-    --green1: #008000;
-    --green2: #7cfc00;
-    --dark: #0f0f0f;
-}
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
 
-body {
-    margin: 0;
-    font-family: "Segoe UI", sans-serif;
-    background: linear-gradient(135deg, var(--green1), #111, var(--green1));
-    background-size: 400% 400%;
-    animation: bg 12s ease infinite;
-    color: white;
-}
+        header { margin-bottom: 30px; z-index: 2; }
+        #dynamic-greeting { margin-top: 10px; font-weight: bold; }
 
-@keyframes bg {
-    0%{background-position:0% 50%}
-    50%{background-position:100% 50%}
-    100%{background-position:0% 50%}
-}
+        /* Cookie Banner Style */
+        #cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0,0,0,0.95);
+            color: white;
+            padding: 25px;
+            z-index: 10000;
+            display: none;
+            text-align: center;
+            border-top: 4px solid var(--accent-green);
+        }
 
-/* TOPBAR */
-.topbar {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:15px;
-}
+        .cookie-btn {
+            background: var(--accent-green);
+            color: var(--primary-green);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+        }
 
-.profile {
-    display:flex;
-    align-items:center;
-    gap:10px;
-    cursor:pointer;
-}
+        /* Glow & UI */
+        #cursor-glow {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(124,252,0,0.12) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+        }
 
-.profile img {
-    width:42px;
-    height:42px;
-    border-radius:50%;
-    border:2px solid var(--green2);
-}
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            padding: 15px 25px;
+            border-radius: 15px;
+            border-left: 5px solid var(--accent-green);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 100;
+            animation: slideIn 0.5s ease-out;
+        }
 
-/* LOGIN MODAL */
-#loginModal {
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.8);
-    display:none;
-    justify-content:center;
-    align-items:center;
-}
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-.modal {
-    background:#111;
-    padding:20px;
-    border-radius:12px;
-    width:300px;
-}
+        .section-title {
+            font-size: 1rem;
+            margin: 40px 0 20px 0;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+        }
 
-button {
-    width:100%;
-    margin-top:10px;
-    padding:10px;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-}
+        .section-title::after {
+            content: "";
+            height: 1px;
+            background: linear-gradient(90deg, var(--accent-green), transparent);
+            flex-grow: 1;
+            margin-left: 20px;
+        }
 
-.github { background:#333; color:white; }
-.email { background:var(--green2); color:black; }
-.guest { background:#555; color:white; }
+        .content {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            position: relative;
+            z-index: 2;
+        }
 
-.card {
-    background:white;
-    color:black;
-    margin:10px;
-    padding:15px;
-    border-radius:10px;
-}
-</style>
+        .button {
+            display: flex;
+            flex-direction: column;
+            padding: 30px;
+            background: white;
+            color: var(--primary-green);
+            text-decoration: none;
+            border-radius: 20px;
+            font-weight: bold;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .button:hover { transform: translateY(-5px); background: var(--accent-green); color: white; }
+        .button span { font-size: 0.8rem; font-weight: normal; margin-top: 5px; color: #444; }
+
+        footer {
+            margin-top: auto;
+            padding: 30px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.6);
+            z-index: 2;
+        }
+
+        footer a { color: var(--accent-green); text-decoration: none; margin: 0 5px; }
+
+        @media (max-width: 600px) {
+            .content { grid-template-columns: 1fr; }
+            footer { flex-direction: column; gap: 10px; text-align: center; }
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="topbar">
-    <h2>VikLin.fun</h2>
 
-    <div class="profile" onclick="openLogin()">
-        <span id="userLabel">Guest</span>
-        <img id="avatar" src="favikon.png">
+    <div id="cursor-glow"></div>
+
+    <header>
+        <img src="logo.png" alt="logo" type"png/image">   
+        <div id="dynamic-greeting">Goddag</div>
+    </header>
+
+    <div class="toast" id="welcome-toast">
+        <div style="font-size: 1.5rem;">🚀</div>
+        <div>
+            <div style="font-weight:bold; color:var(--accent-green)">VikLin siger</div>
+            <div style="font-size:0.8rem;">ER DU KLAR TIL AT HAVE DET SJOVT?</div>
+        </div>
     </div>
-</div>
 
-<!-- LOGIN -->
-<div id="loginModal">
-    <div class="modal">
-        <h3>Log ind</h3>
+    <div class="section-title">Projekter</div>
+    <div class="content">
+        <a href="hh.html" class="button">Hackerskriver<span>Skriv harmløst hackerkode</span></a>
+        <a href="tetris.html" class="button">Tetris<span>Spil Tetris!!!</span></a>
+        <a href="Alfabetet.html" class="button">Alfabetet<span>Lær alfabetet</span></a>
+        <a href="hhh.html" class="button">Gæt landet<span>Interaktiv læring og leg</span></a>
+        <a href="joke (1).html" class="button">Jokes<span>Find jokes</span></a>
+        <a href="Nytår.html" class="button">Nytårsnedtælling<span>Se tid til nytår</span></a>
+        <a href="Haunted-Maze-3D.html" class="button">Haunted Maze 3D<span>Sjovt 3D-spil</span></a>
+        <a href="snake.html" class="button">Slangespil<span>Klassisk Snake</span></a>
+        <a href="mat.html" class="button">Matematikspillet<span>Øv dine regnestykker</span></a>
+        </div>
 
-        <button class="github" onclick="loginGitHub()">GitHub login</button>
+    <footer>
+        <div>&copy; 2026 VIKLIN DIGITAL</div>
+        <div>
+            <a href="privatliv.html">Privatliv</a> • <a href="cookies.html">Cookies</a> • <a href="credits.html">Credits</a> •
+            <span id="footer-date"></span> • <span id="clock-footer"></span>
+        </div>
+    </footer>
 
-        <input id="email" placeholder="Email" style="width:100%;padding:8px;margin-top:10px;">
-        <button class="email" onclick="loginEmail()">Email login</button>
+    <script>
+        // Vis banner hvis ikke accepteret
+        if (!hasConsent) { document.getElementById('cookie-banner').style.display = 'block'; }
 
-        <button class="guest" onclick="closeLogin()">Spil som gæst</button>
-    </div>
-</div>
+        // Mouse Glow
+        const glow = document.getElementById('cursor-glow');
+        document.addEventListener('mousemove', e => {
+            glow.style.left = e.clientX + 'px';
+            glow.style.top = e.clientY + 'px';
+        });
 
-<!-- CONTENT -->
-<div style="padding:20px;">
-    <h1>🎮 Spil</h1>
-
-    <div class="card">Tetris <button onclick="play()">Spil</button></div>
-    <div class="card">Snake <button onclick="play()">Spil</button></div>
-</div>
-
-<script>
-/* =========================
-   SUPABASE INIT (FIXED)
-========================= */
-const supabaseClient = supabase.createClient(
-  "https://bmsfrhbmgwqzphszpxwb.supabase.co",
-  "sb_publishable_F8_v0IAh3djW12vfau-9iQ_U_On8PKB"
-);
-
-/* =========================
-   UI
-========================= */
-function openLogin(){
-    document.getElementById("loginModal").style.display="flex";
-}
-
-function closeLogin(){
-    document.getElementById("loginModal").style.display="none";
-}
-
-/* =========================
-   AUTH STATE (IMPORTANT FIX)
-========================= */
-let user = null;
-
-async function loadUser(){
-    const { data } = await supabaseClient.auth.getUser();
-
-    if(data.user){
-        user = data.user;
-
-        document.getElementById("userLabel").innerText = user.email;
-
-        document.getElementById("avatar").src =
-            user.user_metadata?.avatar_url ||
-            `https://api.dicebear.com/7.x/identicon/svg?seed=${user.email}`;
-    }
-}
-
-supabaseClient.auth.onAuthStateChange(() => {
-    loadUser();
-});
-
-loadUser();
-
-/* =========================
-   LOGIN FIXED
-========================= */
-async function loginGitHub(){
-    await supabaseClient.auth.signInWithOAuth({
-        provider:"github",
-        options:{
-            redirectTo: window.location.origin
+        // Tid & Uptime
+        function updateSystem() {
+            const now = new Date();
+            document.getElementById('clock-footer').innerText = now.toLocaleTimeString('da-DK');
+            document.getElementById('footer-date').innerText = now.toLocaleDateString('da-DK', {day:'numeric', month:'short'});
+            
+            const hour = now.getHours();
+            const greet = hour<5 ? "Godnat" : hour<10 ? "Godmorgen" : hour<18 ? "Goddag" : "Godaften";
+            document.getElementById('dynamic-greeting').innerText = greet;
         }
-    });
-}
+        setInterval(updateSystem, 1000);
+        updateSystem();
 
-async function loginEmail(){
-    const email = document.getElementById("email").value;
-
-    await supabaseClient.auth.signInWithOtp({
-        email
-    });
-
-    alert("Tjek din email 📩");
-    closeLogin();
-}
-
-/* =========================
-   GAME (guest safe)
-========================= */
-function play(){
-    alert("Spil starter (guest eller login virker)");
-}
-</script>
-
+        // Skjul toast
+        setTimeout(() => { document.getElementById('welcome-toast').style.display = 'none'; }, 5000);
+    </script>
 </body>
 </html>
