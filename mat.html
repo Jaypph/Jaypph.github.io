@@ -7,201 +7,284 @@
     <link rel="icon" href="favikon.png" sizes="any">
 
     <style>
+        :root {
+            --bg1: #0b3d0b;
+            --bg2: #021a02;
+            --card: rgba(51, 75, 255, 0.18);
+            --card-border: rgba(255,255,255,0.15);
+            --accent: #a200ff;
+            --good: #2ecc71;
+            --bad: #e74c3c;
+            --warn: #f1c40f;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background: #065400;
-            color: white;
-            text-align: center;
-            padding-top: 50px;
             margin: 0;
+            font-family: system-ui, Arial, sans-serif;
+            background: radial-gradient(circle at top, var(--bg1), var(--bg2));
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        a.button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 14px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            color: white;
+            text-decoration: none;
+            backdrop-filter: blur(8px);
+            transition: 0.2s;
+        }
+
+        a.button:hover {
+            transform: scale(1.05);
+            background: rgba(255,255,255,0.2);
         }
 
         .quiz-container {
-            background: #334bff;
-            padding: 30px;
-            border-radius: 20px;
-            display: inline-block;
-            min-width: 350px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(14px);
+            padding: 35px;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            animation: popIn 0.5s ease;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
 
         h1 {
             margin-top: 0;
+            font-size: 28px;
         }
 
         .stats {
-            color: #e0e0e0;
-            margin-bottom: 10px;
-            font-size: 15px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            opacity: 0.85;
+            margin-bottom: 15px;
         }
 
         .hint-box {
-            background: #2437c9;
+            background: rgba(0,0,0,0.25);
             padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-            font-size: 1.4em;
-            font-weight: bold;
+            border-radius: 14px;
+            margin: 18px 0;
+            font-size: 1.5em;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            transition: 0.3s;
         }
 
         input {
-            padding: 10px;
+            width: 100%;
+            padding: 12px;
             font-size: 18px;
-            border-radius: 5px;
-            border: none;
-            width: 200px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(0,0,0,0.3);
+            color: white;
             text-align: center;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--accent);
         }
 
         button {
-            padding: 10px 20px;
+            width: 100%;
+            margin-top: 10px;
+            padding: 12px;
             font-size: 16px;
             cursor: pointer;
-            border-radius: 5px;
+            border-radius: 10px;
             border: none;
-            background: #a200ff;
-            color: #050505;
+            background: linear-gradient(135deg, var(--accent), #6a00ff);
+            color: white;
             font-weight: bold;
-            margin: 10px;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
         }
 
         button:disabled {
-            background: #555;
+            background: #444;
             cursor: not-allowed;
+            transform: none;
         }
 
         #resultat {
-            font-size: 20px;
-            margin-top: 20px;
-            font-weight: bold;
+            font-size: 18px;
+            margin-top: 15px;
             min-height: 30px;
+            font-weight: bold;
         }
 
         footer {
-            margin-top: 40px;
-            font-size: 13px;
-            color: #cfcfcf;
+            margin-top: 25px;
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .progress {
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, var(--good), var(--accent));
+            transition: width 0.3s ease;
         }
     </style>
 </head>
 
 <body>
-    <a href="index.html" class="button">Tilbage til forsiden</a>
+
+<a href="index.html" class="button">← Forside</a>
+
 <div class="quiz-container" id="quiz-box">
     <h1>Matematikspillet</h1>
 
     <div class="stats">
-        Opgaver tilbage: <span id="count">10</span> |
-        Rigtige: <span id="correct">0</span>
+        <span>Opgaver: <b id="count">10</b></span>
+        <span>Rigtige: <b id="correct">0</b></span>
+    </div>
+
+    <div class="progress">
+        <div class="progress-bar" id="bar"></div>
     </div>
 
     <div id="hint" class="hint-box">Klar?</div>
 
-    <input
-        type="number"
-        id="answer"
-        placeholder="Skriv svaret"
-        step="any"
-        onkeydown="if(event.key==='Enter' && !this.disabled) check()"
-    >
-    <br>
+    <input type="number" id="answer" placeholder="Skriv svaret"
+        onkeydown="if(event.key==='Enter' && !this.disabled) check()">
 
     <button id="submit-btn" onclick="check()">Svar</button>
     <button id="next-btn" onclick="nextRound()" style="display:none;">
-        Næste spørgsmål ➜
+        Næste ➜
     </button>
 
     <div id="resultat"></div>
 </div>
 
 <footer>
-    &copy; 2026 VIKLIN DIGITAL • DESIGNET TIL FREMTIDEN
+    © 2026 VIKLIN DIGITAL • BYGGET MED TRADITION OG FREMTID
 </footer>
 
 <script>
-    // Klassisk spørgsmålsliste – nem at udvide
-    const originalList = [
-        { n: 25,  h: "5 × 5 =" },
-        { n: 200, h: "20 × 10 =" },
-        { n: 44,  h: "11 + 11 + 11 + 11 =" },
-        { n: 10,  h: "100 ÷ 10 =" },
-        { n: 38,  h: "45 − 7 =" },
-        { n: 23,  h: "22 + 1 − 8 + 2 + 5 + 1 =" },
-        { n: 44,  h: "440 ÷ 10 =" },
-        { n: 0,   h: "-8 + 8 =" },
-        { n: 0,   h: "π × 0 =" },
-        { n: 4,   h: "8 × 0,5 =" }
-    ];
+const originalList = [
+    { n: 25,  h: "5 × 5 =" },
+    { n: 200, h: "20 × 10 =" },
+    { n: 44,  h: "11 + 11 + 11 + 11 =" },
+    { n: 10,  h: "100 ÷ 10 =" },
+    { n: 38,  h: "45 − 7 =" },
+    { n: 23,  h: "22 + 1 − 8 + 2 + 5 + 1 =" },
+    { n: 44,  h: "440 ÷ 10 =" },
+    { n: 0,   h: "-8 + 8 =" },
+    { n: 0,   h: "π × 0 =" },
+    { n: 4,   h: "8 × 0,5 =" }
+];
 
-    let currentList = [];
-    let correctCount = 0;
-    let currentItem = null;
+let currentList = [];
+let correctCount = 0;
+let currentItem = null;
 
-    function start() {
-        currentList = [...originalList].sort(() => 0.5 - Math.random());
-        correctCount = 0;
-        document.getElementById("correct").innerText = 0;
-        nextRound();
+function updateBar() {
+    const total = 10;
+    const left = currentList.length;
+    document.getElementById("bar").style.width = ((left / total) * 100) + "%";
+}
+
+function start() {
+    currentList = [...originalList].sort(() => 0.5 - Math.random());
+    correctCount = 0;
+    document.getElementById("correct").innerText = 0;
+    nextRound();
+}
+
+function nextRound() {
+    if (currentList.length === 0) return showFinalScore();
+
+    document.getElementById("resultat").innerText = "";
+    const input = document.getElementById("answer");
+    input.value = "";
+    input.disabled = false;
+
+    document.getElementById("submit-btn").style.display = "block";
+    document.getElementById("next-btn").style.display = "none";
+
+    document.getElementById("count").innerText = currentList.length;
+
+    currentItem = currentList.pop();
+    document.getElementById("hint").innerText = currentItem.h;
+
+    updateBar();
+    input.focus();
+}
+
+function check() {
+    const input = document.getElementById("answer");
+    const res = document.getElementById("resultat");
+
+    let guess = Number(input.value.replace(",", "."));
+
+    if (Number.isNaN(guess)) {
+        res.innerText = "Det er ikke et tal 🙂";
+        res.style.color = "#f1c40f";
+        return;
     }
 
-    function nextRound() {
-        if (currentList.length === 0) {
-            showFinalScore();
-            return;
-        }
+    input.disabled = true;
+    document.getElementById("submit-btn").style.display = "none";
+    document.getElementById("next-btn").style.display = "block";
 
-        document.getElementById("resultat").innerText = "";
-        document.getElementById("answer").value = "";
-        document.getElementById("answer").disabled = false;
-        document.getElementById("submit-btn").style.display = "inline-block";
-        document.getElementById("next-btn").style.display = "none";
-
-        document.getElementById("count").innerText = currentList.length;
-
-        currentItem = currentList.pop();
-        document.getElementById("hint").innerText = currentItem.h;
-        document.getElementById("answer").focus();
+    if (guess === currentItem.n) {
+        correctCount++;
+        res.innerText = "Rigtigt! 🎉";
+        res.style.color = "#2ecc71";
+        document.getElementById("correct").innerText = correctCount;
+    } else {
+        res.innerText = `Forkert ❌ Svaret var ${currentItem.n}`;
+        res.style.color = "#e74c3c";
     }
+}
 
-    function check() {
-        const input = document.getElementById("answer");
-        const resDiv = document.getElementById("resultat");
+function showFinalScore() {
+    document.getElementById("quiz-box").innerHTML = `
+        <h1>Mission fuldført 🏆</h1>
+        <p style="font-size:20px;">Du fik <b>${correctCount}</b> ud af 10</p>
+        <button onclick="location.reload()">Spil igen</button>
+    `;
+}
 
-        let userGuess = Number(input.value.replace(",", "."));
-
-        if (Number.isNaN(userGuess)) {
-            resDiv.innerText = "Det var ikke et tal 🙂";
-            resDiv.style.color = "#f1c40f";
-            return;
-        }
-
-        input.disabled = true;
-        document.getElementById("submit-btn").style.display = "none";
-        document.getElementById("next-btn").style.display = "inline-block";
-
-        if (userGuess === currentItem.n) {
-            correctCount++;
-            resDiv.innerText = "Rigtigt! 🎉";
-            resDiv.style.color = "#2ecc71";
-            document.getElementById("correct").innerText = correctCount;
-        } else {
-            resDiv.innerText = `Forkert ❌ Det rigtige svar var ${currentItem.n}`;
-            resDiv.style.color = "#e74c3c";
-        }
-    }
-
-    function showFinalScore() {
-        const box = document.getElementById("quiz-box");
-        box.innerHTML = `
-            <h1>Færdig! 🏆</h1>
-            <p style="font-size:24px;">
-                Du fik <strong>${correctCount}</strong> ud af 10 rigtige
-            </p>
-            <button onclick="location.reload()">Prøv igen</button>
-        `;
-    }
-
-    start();
+start();
 </script>
 
 </body>
