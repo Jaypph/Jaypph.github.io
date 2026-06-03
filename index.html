@@ -159,7 +159,6 @@
 </head>
 <body>
 
-
     <div id="cursor-glow"></div>
 
     <header>
@@ -186,7 +185,7 @@
         <a href="Haunted-Maze-3D.html" class="button">Haunted Maze 3D<span>Sjovt 3D-spil</span></a>
         <a href="snake.html" class="button">Slangespil<span>Klassisk Snake</span></a>
         <a href="mat.html" class="button">Matematikspillet<span>Øv dine regnestykker</span></a>
-        </div>
+    </div>
 
     <footer>
         <div>&copy; 2026 VIKLIN DIGITAL</div>
@@ -196,9 +195,18 @@
         </div>
     </footer>
 
+    <!-- HTML cookie-banner koblet til dit CSS-design -->
+    <div id="cookie-banner">
+        Vi bruger cookies til spil-statistik.
+        <br>
+        <button class="cookie-btn" onclick="document.getElementById('cookie-banner').style.display='none'">OK</button>
+    </div>
+
     <script>
-        // Vis banner hvis ikke accepteret
-        if (!hasConsent) { document.getElementById('cookie-banner').style.display = 'block'; }
+        // Vis banner hvis Cookiebot mangler accept (Løst fejl her) [1]
+        window.addEventListener('CookiebotOnDialogDisplay', function () {
+            document.getElementById('cookie-banner').style.display = 'block';
+        });
 
         // Mouse Glow
         const glow = document.getElementById('cursor-glow');
@@ -220,11 +228,28 @@
         setInterval(updateSystem, 1000);
         updateSystem();
 
-        // Skjul toast
-        setTimeout(() => { document.getElementById('welcome-toast').style.display = 'none'; }, 5000);
+        // Skjul toast sikkert
+        setTimeout(() => { 
+            const toast = document.getElementById('welcome-toast');
+            if (toast) toast.style.display = 'none'; 
+        }, 5000);
     </script>
-   <!-- Cloudflare Web Analytics -->
-    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "ec470d31409448668386d795a667e294"}'></script>
-    <!-- End Cloudflare Web Analytics -->
+
+    <!-- Supabase Edge Analytics (Uden API Nøgle) -->
+    <script>
+      (function() {
+        const EDGE_FUNCTION_URL = "https://skvbxykxgsjwqwtyqidr.supabase.co/functions/v1/log-visit";
+
+        fetch(EDGE_FUNCTION_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            page_path: window.location.pathname,
+            referrer: document.referrer || null,
+            browser_language: navigator.language || null
+          })
+        }).catch(err => console.error("Analytics fejl:", err));
+      })();
+    </script>
 </body>
 </html>
