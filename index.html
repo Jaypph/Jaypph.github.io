@@ -235,21 +235,47 @@
         }, 5000);
     </script>
 
-    <!-- Supabase Edge Analytics (Uden API Nøgle) -->
+
     <script>
       (function() {
-        const EDGE_FUNCTION_URL = "https://skvbxykxgsjwqwtyqidr.supabase.co/functions/v1/log-visit";
+        const EDGE_FUNCTION_URL = "https://supabase.co";
+        const startTime = performance.now();
+        let sessionId = null;
 
+        // 1. Registrer ankomst og få et unikt session_id retur fra din Edge Function
         fetch(EDGE_FUNCTION_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            page_path: window.location.pathname,
+            // Inkluderer domænenavn (f.eks. jaypph.github.io/tetris) så du kan kende forskel på underdomæner
+            page_path: window.location.hostname + window.location.pathname,
             referrer: document.referrer || null,
             browser_language: navigator.language || null
           })
-        }).catch(err => console.error("Analytics fejl:", err));
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.session_id) sessionId = data.session_id;
+        })
+        .catch(err => console.error("Analytics fejl:", err));
+
+        // 2. Mål tid når brugeren forlader siden eller lukker fanen
+        document.addEventListener("visibilitychange", function() {
+          if (document.visibilityState === "hidden" && sessionId) {
+            const endTime = performance.now();
+            const durationSeconds = (endTime - startTime) / 1000;
+
+            const payload = JSON.stringify({
+              session_id: sessionId,
+              duration_seconds: durationSeconds
+            });
+
+            // sendBeacon sikrer at data sendes i baggrunden selvom fanen lukkes helt
+            navigator.sendBeacon(EDGE_FUNCTION_URL, payload);
+          }
+        });
       })();
     </script>
+
 </body>
 </html>
