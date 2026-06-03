@@ -236,30 +236,33 @@
     </script>
 
 
+    <!-- Robust Tidssporing uden API-nøgle -->
     <script>
       (function() {
         const EDGE_FUNCTION_URL = "https://supabase.co";
         const startTime = performance.now();
         let sessionId = null;
 
-        // 1. Registrer ankomst og få et unikt session_id retur fra din Edge Function
+        // 1. Registrer ankomst
         fetch(EDGE_FUNCTION_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            // Inkluderer domænenavn (f.eks. jaypph.github.io/tetris) så du kan kende forskel på underdomæner
             page_path: window.location.hostname + window.location.pathname,
             referrer: document.referrer || null,
             browser_language: navigator.language || null
           })
         })
-        .then(res => res.json())
-        .then(data => {
-          if (data.session_id) sessionId = data.session_id;
+        .then(res => {
+          if (!res.ok) throw new Error("Server svarede med fejl " + res.status);
+          return res.json();
         })
-        .catch(err => console.error("Analytics fejl:", err));
+        .then(data => {
+          if (data && data.session_id) sessionId = data.session_id;
+        })
+        .catch(err => console.error("Analytics ankomst-fejl:", err));
 
-        // 2. Mål tid når brugeren forlader siden eller lukker fanen
+        // 2. Registrer afgang (Mål tid)
         document.addEventListener("visibilitychange", function() {
           if (document.visibilityState === "hidden" && sessionId) {
             const endTime = performance.now();
@@ -270,12 +273,14 @@
               duration_seconds: durationSeconds
             });
 
-            // sendBeacon sikrer at data sendes i baggrunden selvom fanen lukkes helt
-            navigator.sendBeacon(EDGE_FUNCTION_URL, payload);
+            // Tvinger datatypen til application/json i sendBeacon via en Blob
+            const blob = new Blob([payload], { type: 'application/json' });
+            navigator.sendBeacon(EDGE_FUNCTION_URL, blob);
           }
         });
       })();
     </script>
+
 
 </body>
 </html>
